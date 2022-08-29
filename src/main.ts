@@ -54,6 +54,8 @@ export default class PeriodicNotesPlugin extends Plugin {
   public calendarSetManager: CalendarSetManager;
   private timelineManager: TimelineManager;
 
+  public options: ISettings;
+
   unload(): void {
     this.timelineManager?.cleanup();
   }
@@ -63,6 +65,12 @@ export default class PeriodicNotesPlugin extends Plugin {
     await this.loadSettings();
     this.settings.subscribe(this.onUpdateSettings.bind(this));
 
+    this.register(
+      this.settings.subscribe((value) => {
+        this.options = value;
+      })
+    );
+    
     this.ribbonEl = null;
     this.calendarSetManager = new CalendarSetManager(this);
     this.cache = new PeriodicNotesCache(this.app, this);
